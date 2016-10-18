@@ -1,14 +1,14 @@
 {
-  "name": "adonis-app",
-  "version": "3.1.0",
+  "name": "barracuda-api",
+  "version": "0.0.1",
   "main": "index.js",
   "scripts": {
     "dev": "nodemon --watch app --watch bootstrap --watch config --watch .env -x \"node --harmony_proxies\" server.js",
     "start": "node --harmony_proxies server.js",
     "lint": "standard"
   },
-  "author": "",
-  "license": "MIT",
+  "author": "jet.oneza",
+  "license": "NONE",
   "description": "",
   "private": true,
   "dependencies": {
