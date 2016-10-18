@@ -15,13 +15,13 @@ body {
 }
 
 .__banner {
-  background: #744d82;
-  background: -moz-radial-gradient(top, ellipse cover, #744d82 11%, #503d67 99%, #503d67 100%);
-  background: -webkit-gradient(radial, top center, 0, center center, 100%, color-stop(11%, #744d82), color-stop(99%, #503d67), color-stop(100%, #503d67));
-  background: -webkit-radial-gradient(top, ellipse cover, #744d82 11%, #503d67 99%, #503d67 100%);
-  background: -o-radial-gradient(top, ellipse cover, #744d82 11%, #503d67 99%, #503d67 100%);
-  background: -ms-radial-gradient(top, ellipse cover, #744d82 11%, #503d67 99%, #503d67 100%);
-  background: radial-gradient(ellipse at top, #744d82 11%, #503d67 99%, #503d67 100%);
+  background: #1C6BA0;
+  background: -moz-radial-gradient(top, ellipse cover, #1C6BA0 11%, #0f3e5e 99%, #0f3e5e 100%);
+  background: -webkit-gradient(radial, top center, 0, center center, 100%, color-stop(11%, #1C6BA0), color-stop(99%, #0f3e5e), color-stop(100%, #0f3e5e));
+  background: -webkit-radial-gradient(top, ellipse cover, #1C6BA0 11%, #0f3e5e 99%, #0f3e5e 100%);
+  background: -o-radial-gradient(top, ellipse cover, #1C6BA0 11%, #0f3e5e 99%, #0f3e5e 100%);
+  background: -ms-radial-gradient(top, ellipse cover, #1C6BA0 11%, #0f3e5e 99%, #0f3e5e 100%);
+  background: radial-gradient(ellipse at top, #1C6BA0 11%, #0f3e5e 99%, #0f3e5e 100%);
 }
 
 .__banner {
