@@ -1,6 +1,6 @@
 {
-  "name": "adonis-app",
-  "version": "3.1.0",
+  "name": "barracuda-api",
+  "version": "0.0.1",
   "dependencies": {
     "abbrev": {
       "version": "1.0.9",
@@ -242,6 +242,11 @@
       "version": "2.3.0",
       "from": "bcryptjs@>=2.3.0 <3.0.0",
       "resolved": "https://registry.npmjs.org/bcryptjs/-/bcryptjs-2.3.0.tgz"
+    },
+    "bignumber.js": {
+      "version": "2.3.0",
+      "from": "bignumber.js@2.3.0",
+      "resolved": "https://registry.npmjs.org/bignumber.js/-/bignumber.js-2.3.0.tgz"
     },
     "binary-extensions": {
       "version": "1.7.0",
@@ -2353,6 +2358,23 @@
       "from": "mute-stream@0.0.6",
       "resolved": "https://registry.npmjs.org/mute-stream/-/mute-stream-0.0.6.tgz"
     },
+    "mysql": {
+      "version": "2.11.1",
+      "from": "mysql@latest",
+      "resolved": "https://registry.npmjs.org/mysql/-/mysql-2.11.1.tgz",
+      "dependencies": {
+        "isarray": {
+          "version": "0.0.1",
+          "from": "isarray@0.0.1",
+          "resolved": "https://registry.npmjs.org/isarray/-/isarray-0.0.1.tgz"
+        },
+        "readable-stream": {
+          "version": "1.1.14",
+          "from": "readable-stream@1.1.14",
+          "resolved": "https://registry.npmjs.org/readable-stream/-/readable-stream-1.1.14.tgz"
+        }
+      }
+    },
     "nan": {
       "version": "2.4.0",
       "from": "nan@>=2.3.0 <3.0.0",
@@ -2912,6 +2934,11 @@
       "version": "1.0.3",
       "from": "sprintf-js@>=1.0.2 <1.1.0",
       "resolved": "https://registry.npmjs.org/sprintf-js/-/sprintf-js-1.0.3.tgz"
+    },
+    "sqlstring": {
+      "version": "2.0.1",
+      "from": "sqlstring@2.0.1",
+      "resolved": "https://registry.npmjs.org/sqlstring/-/sqlstring-2.0.1.tgz"
     },
     "sshpk": {
       "version": "1.10.1",
