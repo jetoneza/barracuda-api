@@ -3,8 +3,8 @@ const expect = use('chai').expect
 const request = use('supertest')
 const Server = use('Adonis/Src/Server').getInstance()
 
-describe("GET /test", () => {
-  context("Sample test route", () => {
+describe("Samplete test route.", () => {
+  context("GET /test", () => {
     it("should return a status 200", function (done) {
       request(Server)
         .get('/test')
