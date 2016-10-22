@@ -6,7 +6,7 @@
     "dev": "nodemon --watch app --watch bootstrap --watch config --watch .env -x \"node --harmony_proxies\" server.js",
     "start": "node --harmony_proxies server.js",
     "lint": "standard",
-    "test": "node --harmony test.js"
+    "test": "NODE_ENV=test node --harmony test.js"
   },
   "author": "jet.oneza",
   "license": "NONE",
@@ -20,7 +20,10 @@
     "adonis-framework": "^3.0.3",
     "adonis-lucid": "^3.0.8",
     "adonis-middleware": "^1.0.8",
+    "adonis-validation-provider": "^3.0.4",
     "mysql": "^2.11.1",
+    "node-exceptions": "^1.0.3",
+    "randomstring": "^1.1.5",
     "standard": "^8.4.0",
     "youch": "^1.0.1"
   },
