@@ -9,8 +9,8 @@ describe("Testing users routes.", () => {
       request(Server)
         .post('/users')
         .send({
-          username: 'testinguser',
-          email: 'testinguser@email.com',
+          username: `test${Date.now()}`,
+          email: `test${Date.now()}@email.com`,
           password: '123456789',
           confirmPassword: '123456789'
         })
