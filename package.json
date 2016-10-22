@@ -5,7 +5,8 @@
   "scripts": {
     "dev": "nodemon --watch app --watch bootstrap --watch config --watch .env -x \"node --harmony_proxies\" server.js",
     "start": "node --harmony_proxies server.js",
-    "lint": "standard"
+    "lint": "standard",
+    "test": "node --harmony test.js"
   },
   "author": "jet.oneza",
   "license": "NONE",
@@ -33,7 +34,11 @@
     "App": "./app"
   },
   "devDependencies": {
+    "chai": "^3.2.0",
+    "co-mocha": "^1.1.2",
     "nodemon": "^1.11.0",
-    "standard": "^8.3.0"
+    "mocha": "^2.5.3",
+    "standard": "^8.3.0",
+    "supertest": "^1.2.0"
   }
 }

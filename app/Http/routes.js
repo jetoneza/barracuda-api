@@ -18,3 +18,6 @@
 const Route = use('Route')
 
 Route.on('/').render('welcome')
+
+// Sample test route
+Route.get('/test', 'TestController.index')
