@@ -30,7 +30,11 @@ Http.handleError = function * (error, request, response) {
    */
   const status = error.status || 500
   console.error(error.stack)
-  yield response.status(status).sendView('errors/index', {error})
+  let jsonResponse = {
+    code: status,
+    message: error.message
+  }
+  yield response.status(status).json({errors: [jsonResponse]})
 }
 
 /**
