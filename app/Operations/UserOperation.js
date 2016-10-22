@@ -44,7 +44,7 @@ class UserOperation extends Operation {
     }
 
     const user = new User()
-    const userProperty = new UserProperty()
+    let userProperty = new UserProperty()
     let salt = Encryption.encrypt(randomString.generate(32))
 
     try {
@@ -59,6 +59,8 @@ class UserOperation extends Operation {
 
       yield userProperty.save()
 
+
+      userProperty = new UserProperty()
       userProperty.userId = user.id
       userProperty.key = 'passwordSalt'
       userProperty.value = salt
