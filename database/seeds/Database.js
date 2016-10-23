@@ -5,6 +5,7 @@ const Hash = use('Hash')
 const randomString = use('randomstring')
 const User = use('App/Model/User')
 const UserProperty = use('App/Model/UserProperty')
+const Kaha = use('App/Model/Kaha')
 
 /*
 |--------------------------------------------------------------------------
@@ -44,6 +45,11 @@ class DatabaseSeeder {
     userProperty.value = salt
 
     yield userProperty.save()
+
+    let kaha = new Kaha()
+    kaha.userId = user.id
+
+    yield kaha.save()
   }
 
 }
