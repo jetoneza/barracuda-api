@@ -4,7 +4,7 @@ const Lucid = use('Lucid')
 
 class UserProperty extends Lucid {
   user() {
-    return this.belongsTo('App/Model/User')
+    return this.belongsTo('App/Model/User', 'id', 'userId')
   }
 }
 
