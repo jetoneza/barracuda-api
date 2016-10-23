@@ -95,6 +95,18 @@ class TransactionOperation extends Operation {
       return false
     }
   }
+
+  * getTypes() {
+    try {
+      const types = yield TransactionType.all()
+
+      return types
+    } catch(e) {
+      this.addError(HTTPResponse.STATUS_INTERNAL_SERVER_ERROR, e.message)
+
+      return false
+    }
+  }
 }
 
 module.exports = TransactionOperation

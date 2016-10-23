@@ -22,6 +22,22 @@ class TransactionsController {
 
     response.json(transaction)
   }
+
+  * getTypes(request, response) {
+    const op = new TransactionOperation()
+
+    let types = yield op.getTypes()
+
+    if(types === false) {
+      let error = op.getFirstError()
+
+      throw new HttpException(error.message, error.code)
+
+      return
+    }
+
+    response.json(types)
+  }
 }
 
 module.exports = TransactionsController

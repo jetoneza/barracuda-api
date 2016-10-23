@@ -39,6 +39,7 @@ Route.post('/users', 'UsersController.store')
  |--------------------------------------------------------------------------
  */
 Route.post('/transactions', 'TransactionsController.store')
+Route.get('/transactions/types', 'TransactionsController.getTypes')
 
 /*
  |--------------------------------------------------------------------------

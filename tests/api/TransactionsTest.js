@@ -40,6 +40,20 @@ describe("Testing transactions routes.", () => {
         .expect(400, done)
     });
   })
+
+  context("GET /transactions/types", () => {
+    it("should return a status 200", function (done) {
+      request(Server)
+        .get('/transactions/types')
+        .expect(res => {
+          const response = res.body
+          expect(response).to.be.not.null
+          expect(response).to.be.array
+          expect(response.length).to.not.equal(0)
+        })
+        .expect(200, done)
+    });
+  })
 })
 
 
