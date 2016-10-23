@@ -9,6 +9,7 @@ const User = use('App/Model/User')
 const UserProperty = use('App/Model/UserProperty')
 const randomString = use('randomstring')
 const Token = use('App/Model/Token')
+const Kaha = use('App/Model/Kaha')
 
 /**
  * Users Operation
@@ -43,15 +44,16 @@ class UserOperation extends Operation {
       return false
     }
 
-    const user = new User()
-    let userProperty = new UserProperty()
-    let salt = Encryption.encrypt(randomString.generate(32))
-
     try {
+      const user = new User()
+      let salt = Encryption.encrypt(randomString.generate(32))
+
       user.username = this.username
       user.email = this.email
 
       yield user.save()
+
+      let userProperty = new UserProperty()
 
       userProperty.userId = user.id
       userProperty.key = 'passwordHash'
@@ -66,6 +68,13 @@ class UserOperation extends Operation {
       userProperty.value = salt
 
       yield userProperty.save()
+
+      const kaha = new Kaha()
+      kaha.userId = user.id
+
+      yield kaha.save()
+
+      yield user.related('kaha').load()
 
       return user
     } catch(e) {

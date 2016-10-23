@@ -19,6 +19,7 @@ describe("Testing users routes.", () => {
           expect(response).to.be.not.null
           expect(response).to.have.deep.property('token')
           expect(response).to.have.deep.property('user')
+          expect(response).to.have.deep.property('user.kaha')
         })
         .expect(200, done)
     });
