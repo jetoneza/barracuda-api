@@ -6,7 +6,7 @@ class TransactionsController {
   * store(request, response) {
     const op = new TransactionOperation()
 
-    op.userId = request.input('userId')
+    op.userId = request.authUser.id
     op.typeId = request.input('typeId')
     op.amount = request.input('amount')
 
