@@ -15,7 +15,7 @@ class TransactionTypeSeeder {
         type: 'inflow'
       },
       {
-        name: 'Tithe',
+        name: 'Offering',
         type: 'outflow'
       },
       {
