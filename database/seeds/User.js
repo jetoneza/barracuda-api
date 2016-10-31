@@ -6,6 +6,7 @@ const randomString = use('randomstring')
 const User = use('App/Model/User')
 const UserProperty = use('App/Model/UserProperty')
 const Kaha = use('App/Model/Kaha')
+const Token = use('App/Model/Token')
 
 class UserSeeder {
 
@@ -36,6 +37,13 @@ class UserSeeder {
     kaha.userId = user.id
 
     yield kaha.save()
+
+    let token = new Token();
+    token.user_id = user.id
+    token.token = 'abcdefg123'
+    token.forever = true
+
+    yield token.save()
   }
 
 }
