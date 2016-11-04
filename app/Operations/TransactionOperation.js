@@ -133,17 +133,22 @@ class TransactionOperation extends Operation {
     try {
       const transaction = yield Transaction.find(this.id)
 
+      if(!transaction) {
+        this.addError(HTTPResponse.STATUS_NOT_FOUND, 'Transaction not found.')
+        return false
+      }
+
       if(transaction.userId != this.userId) {
         this.addError(HTTPResponse.STATUS_UNAUTHORIZED, 'You can only update your own transaction.')
         return false
       }
 
+      if(transaction.confirmed) {
+        this.addError(HTTPResponse.STATUS_BAD_REQUEST, 'You can not update a transaction that has already been confirmed.')
+        return false
+      }
+
       const kaha = yield Kaha.find(transaction.kahaId)
-      const txnType = yield TransactionType.find(transaction.typeId)
-
-      const amount = txnType.type == TransactionType.TYPE_INFLOW ? (transaction.amount * -1) : transaction.amount;
-
-      const currentAmount = kaha.amount + amount;
 
       const selectedTxnType = yield TransactionType.find(this.typeId)
 
@@ -152,24 +157,12 @@ class TransactionOperation extends Operation {
         return false
       }
 
-      if(selectedTxnType.type == TransactionType.TYPE_OUTFLOW) {
-        if((currentAmount - this.amount) < 0) {
-          this.addError(HTTPResponse.STATUS_BAD_REQUEST, 'Insufficient balance.')
-          return false
-        }
-      }
-
       transaction.typeId = selectedTxnType.id
       transaction.amount = this.amount
 
       yield transaction.save()
 
-      kaha.amount = selectedTxnType.type == TransactionType.TYPE_INFLOW ? (currentAmount + this.amount) : (currentAmount - this.amount)
-
-      yield kaha.save()
-
       yield transaction.related('user').load()
-      yield transaction.related('kaha').load()
       yield transaction.related('type').load()
 
       return transaction

@@ -28,6 +28,22 @@ describe("Testing transactions routes.", () => {
   context("PUT /transactions/:id", () => {
     it("should return a status 200", function (done) {
       request(Server)
+        .put('/transactions/5')
+        .set('Authorization', `Bearer abcdefg123`)
+        .send({
+          userId: 1,
+          typeId: 1,
+          amount: 5,
+        })
+        .expect(res => {
+          const response = res.body
+          expect(response).to.be.not.null
+        })
+        .expect(200, done)
+    });
+
+    it("should return a status 400", function (done) {
+      request(Server)
         .put('/transactions/1')
         .set('Authorization', `Bearer abcdefg123`)
         .send({
@@ -38,12 +54,8 @@ describe("Testing transactions routes.", () => {
         .expect(res => {
           const response = res.body
           expect(response).to.be.not.null
-          expect(response).to.have.deep.property('amount')
-          expect(response).to.have.deep.property('user')
-          expect(response).to.have.deep.property('kaha')
-          expect(response).to.have.deep.property('id')
         })
-        .expect(200, done)
+        .expect(400, done)
     });
   })
 

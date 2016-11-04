@@ -52,18 +52,27 @@ class UserSeeder {
       {
         typeId: 1,
         amount: 10000,
+        confirmed: true,
       },
       {
         typeId: 1,
         amount: 8000,
+        confirmed: true,
       },
       {
         typeId: 3,
         amount: 7512,
+        confirmed: true,
       },
       {
         typeId: 2,
         amount: 500,
+        confirmed: true,
+      },
+      {
+        typeId: 2,
+        amount: 500,
+        confirmed: false,
       },
     ];
     let transaction;
@@ -73,7 +82,7 @@ class UserSeeder {
       transaction.amount = txn.amount
       transaction.userId = user.id
       transaction.kahaId = kaha.id
-      transaction.confirmed = true
+      transaction.confirmed = txn.confirmed
 
       yield transaction.save()
     }
