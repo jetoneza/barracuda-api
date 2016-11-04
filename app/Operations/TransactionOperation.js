@@ -7,6 +7,9 @@ const Kaha = use('App/Model/Kaha')
 const Transaction = use('App/Model/Transaction')
 const TransactionType = use('App/Model/TransactionType')
 
+const SCENARIO_DEFAULT = 'default'
+const SCENARIO_CREATE = 'create'
+
 /**
  * Transaction Operation
  */
@@ -14,24 +17,48 @@ class TransactionOperation extends Operation {
 
   constructor() {
     super()
+    this.scenario = SCENARIO_DEFAULT
     this.userId = null
     this.typeId = null
     this.amount = null
+    this.page = 1
+    this.pageSize = 10
   }
 
   get rules() {
     return {
       userId: `required`,
-      typeId: `required`,
-      amount: `required`,
+      typeId: `required_when:scenario,${SCENARIO_CREATE}`,
+      amount: `required_when:scenario,${SCENARIO_CREATE}`,
     }
   }
 
+  /**
+   * Get transactions list.
+   */
+  * list() {
+    let isValid = yield this.validate()
+
+    if (!isValid) {
+      return false
+    }
+
+    try {
+      let transactions = yield Transaction.query().where('userId', this.userId).with('type').paginate(this.page, this.pageSize)
+
+      return transactions
+    } catch(e) {
+      this.addError(HTTPResponse.STATUS_INTERNAL_SERVER_ERROR, e.message)
+
+      return false
+    }
+  }
 
   /**
-   * Store new user.
+   * Store new transaction.
    */
   * store() {
+    this.scenario = SCENARIO_CREATE
     let isValid = yield this.validate()
 
     if (!isValid) {

@@ -38,6 +38,7 @@ Route.post('/users', 'UsersController.store')
  | Transaction routes
  |--------------------------------------------------------------------------
  */
+Route.get('/transactions', 'TransactionsController.list').middleware('auth')
 Route.post('/transactions', 'TransactionsController.store').middleware('auth')
 Route.get('/transactions/types', 'TransactionsController.getTypes').middleware('auth')
 

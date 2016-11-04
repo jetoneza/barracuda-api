@@ -32,7 +32,7 @@ describe("Testing transactions routes.", () => {
         .send({
           userId: 1,
           typeId: 4,
-          amount: 100,
+          amount: 1000000,
         })
         .expect(res => {
           const response = res.body
@@ -53,6 +53,35 @@ describe("Testing transactions routes.", () => {
           expect(response).to.be.not.null
           expect(response).to.be.array
           expect(response.length).to.not.equal(0)
+        })
+        .expect(200, done)
+    });
+  })
+
+  context("GET /transactions", () => {
+    it("should return a status 200", function (done) {
+      request(Server)
+        .get('/transactions')
+        .set('Authorization', `Bearer abcdefg123`)
+        .expect(res => {
+          const response = res.body
+          expect(response).to.be.not.null
+          expect(response).to.be.array
+          expect(response.length).to.not.equal(0)
+          expect(response.data.length).to.not.equal(0)
+        })
+        .expect(200, done)
+    });
+    it("should return a status 200 and get 2 data", function (done) {
+      request(Server)
+        .get('/transactions?page=1&pageSize=2')
+        .set('Authorization', `Bearer abcdefg123`)
+        .expect(res => {
+          const response = res.body
+          expect(response).to.be.not.null
+          expect(response).to.be.array
+          expect(response.length).to.not.equal(0)
+          expect(response.data.length).to.equal(2)
         })
         .expect(200, done)
     });

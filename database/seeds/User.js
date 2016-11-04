@@ -7,6 +7,7 @@ const User = use('App/Model/User')
 const UserProperty = use('App/Model/UserProperty')
 const Kaha = use('App/Model/Kaha')
 const Token = use('App/Model/Token')
+const Transaction = use('App/Model/Transaction')
 
 class UserSeeder {
 
@@ -35,6 +36,7 @@ class UserSeeder {
 
     let kaha = new Kaha()
     kaha.userId = user.id
+    kaha.amount = 10988
 
     yield kaha.save()
 
@@ -44,6 +46,36 @@ class UserSeeder {
     token.forever = true
 
     yield token.save()
+
+    // Create transactions for user
+    const transactions = [
+      {
+        typeId: 1,
+        amount: 10000,
+      },
+      {
+        typeId: 1,
+        amount: 8000,
+      },
+      {
+        typeId: 3,
+        amount: 7512,
+      },
+      {
+        typeId: 2,
+        amount: 500,
+      },
+    ];
+    let transaction;
+    for(let txn of transactions) {
+      transaction = new Transaction()
+      transaction.typeId = txn.typeId
+      transaction.amount = txn.amount
+      transaction.userId = user.id
+      transaction.kahaId = kaha.id
+
+      yield transaction.save()
+    }
   }
 
 }
