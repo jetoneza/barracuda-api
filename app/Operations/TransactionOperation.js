@@ -95,13 +95,6 @@ class TransactionOperation extends Operation {
         return false
       }
 
-      if(transactionType.type == TransactionType.TYPE_OUTFLOW) {
-        if((kaha.amount - this.amount) < 0) {
-          this.addError(HTTPResponse.STATUS_BAD_REQUEST, 'Insufficient balance.')
-          return false
-        }
-      }
-
       const transaction = new Transaction()
       transaction.userId = user.id
       transaction.kahaId = kaha.id
@@ -110,12 +103,7 @@ class TransactionOperation extends Operation {
 
       yield transaction.save()
 
-      kaha.amount = transactionType.type == TransactionType.TYPE_INFLOW ? (kaha.amount + this.amount) : (kaha.amount - this.amount)
-
-      yield kaha.save()
-
       yield transaction.related('user').load()
-      yield transaction.related('kaha').load()
       yield transaction.related('type').load()
 
       return transaction

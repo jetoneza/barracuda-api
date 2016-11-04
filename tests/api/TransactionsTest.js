@@ -12,34 +12,16 @@ describe("Testing transactions routes.", () => {
         .send({
           userId: 1,
           typeId: 1,
-          amount: 5,
+          amount: 500,
         })
         .expect(res => {
           const response = res.body
           expect(response).to.be.not.null
           expect(response).to.have.deep.property('amount')
           expect(response).to.have.deep.property('user')
-          expect(response).to.have.deep.property('kaha')
           expect(response).to.have.deep.property('id')
         })
         .expect(200, done)
-    });
-
-    it("should return a status 400 with error message insufficient balance", function (done) {
-      request(Server)
-        .post('/transactions')
-        .set('Authorization', `Bearer abcdefg123`)
-        .send({
-          userId: 1,
-          typeId: 4,
-          amount: 1000000,
-        })
-        .expect(res => {
-          const response = res.body
-          expect(response).to.be.not.null
-          expect(response.errors[0].message).to.equal('Insufficient balance.')
-        })
-        .expect(400, done)
     });
   })
 
@@ -62,23 +44,6 @@ describe("Testing transactions routes.", () => {
           expect(response).to.have.deep.property('id')
         })
         .expect(200, done)
-    });
-
-    it("should return a status 400 with error message insufficient balance", function (done) {
-      request(Server)
-        .post('/transactions')
-        .set('Authorization', `Bearer abcdefg123`)
-        .send({
-          userId: 1,
-          typeId: 4,
-          amount: 1000000,
-        })
-        .expect(res => {
-          const response = res.body
-          expect(response).to.be.not.null
-          expect(response.errors[0].message).to.equal('Insufficient balance.')
-        })
-        .expect(400, done)
     });
   })
 
