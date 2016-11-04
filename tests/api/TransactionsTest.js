@@ -8,6 +8,7 @@ describe("Testing transactions routes.", () => {
     it("should return a status 200", function (done) {
       request(Server)
         .post('/transactions')
+        .set('Authorization', `Bearer abcdefg123`)
         .send({
           userId: 1,
           typeId: 1,
@@ -27,6 +28,7 @@ describe("Testing transactions routes.", () => {
     it("should return a status 400 with error message insufficient balance", function (done) {
       request(Server)
         .post('/transactions')
+        .set('Authorization', `Bearer abcdefg123`)
         .send({
           userId: 1,
           typeId: 4,
@@ -45,6 +47,7 @@ describe("Testing transactions routes.", () => {
     it("should return a status 200", function (done) {
       request(Server)
         .get('/transactions/types')
+        .set('Authorization', `Bearer abcdefg123`)
         .expect(res => {
           const response = res.body
           expect(response).to.be.not.null

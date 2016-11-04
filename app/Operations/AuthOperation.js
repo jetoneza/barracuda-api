@@ -33,7 +33,7 @@ class AuthOperation extends Operation {
     let isValid = yield this.validate()
 
     if (!isValid) {
-      return
+      return false
     }
 
     let user = yield User.findBy('username', this.username)
