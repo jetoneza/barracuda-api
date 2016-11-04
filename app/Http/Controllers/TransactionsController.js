@@ -23,6 +23,27 @@ class TransactionsController {
     response.json(transaction)
   }
 
+  * update(request, response) {
+    const op = new TransactionOperation()
+
+    op.userId = request.authUser.id
+    op.id = request.param('id')
+    op.typeId = request.input('typeId')
+    op.amount = request.input('amount')
+
+    let transaction = yield op.update()
+
+    if (transaction === false) {
+      let error = op.getFirstError()
+
+      throw new HttpException(error.message, error.code)
+
+      return
+    }
+
+    response.json(transaction)
+  }
+
   * list(request, response) {
     const { page, pageSize } = request.all()
     const op = new TransactionOperation()

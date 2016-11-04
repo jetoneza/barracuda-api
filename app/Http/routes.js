@@ -40,6 +40,7 @@ Route.post('/users', 'UsersController.store')
  */
 Route.get('/transactions', 'TransactionsController.list').middleware('auth')
 Route.post('/transactions', 'TransactionsController.store').middleware('auth')
+Route.put('/transactions/:id', 'TransactionsController.update').middleware('auth')
 Route.get('/transactions/types', 'TransactionsController.getTypes').middleware('auth')
 
 /*
