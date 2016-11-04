@@ -73,6 +73,7 @@ class UserSeeder {
       transaction.amount = txn.amount
       transaction.userId = user.id
       transaction.kahaId = kaha.id
+      transaction.confirmed = true
 
       yield transaction.save()
     }
