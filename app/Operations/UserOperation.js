@@ -138,11 +138,14 @@ class UserOperation extends Operation {
       let topPayout = 0;
 
       for(let transaction of transactions) {
-        const { amount, type } = transaction.toJSON()
-        if(type.type == TransactionType.TYPE_INFLOW) {
-          topPayin = topPayin > amount ? topPayin : amount
-        } else {
-          topPayout = topPayout > amount ? topPayout : amount
+        if(transaction.confirmed) {
+          const { amount, type } = transaction.toJSON()
+
+          if(type.type == TransactionType.TYPE_INFLOW) {
+            topPayin = topPayin > amount ? topPayin : amount
+          } else {
+            topPayout = topPayout > amount ? topPayout : amount
+          }
         }
       }
 
