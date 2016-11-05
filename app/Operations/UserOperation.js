@@ -10,10 +10,13 @@ const UserProperty = use('App/Model/UserProperty')
 const randomString = use('randomstring')
 const Token = use('App/Model/Token')
 const Kaha = use('App/Model/Kaha')
+const Transaction = use('App/Model/Transaction')
+const TransactionType = use('App/Model/TransactionType')
 
 const SCENARIO_DEFAULT = 'default'
 const SCENARIO_CREATE = 'create'
 const SCENARIO_GET_KAHA = 'getKaha'
+const SCENARIO_GET_STATISTICS = 'getStatistics'
 
 /**
  * Users Operation
@@ -36,7 +39,7 @@ class UserOperation extends Operation {
       email: `required_when:scenario,${SCENARIO_CREATE}|email|unique:users,email`,
       password: `required_when:scenario,${SCENARIO_CREATE}|min:8`,
       confirmPassword: `required_when:scenario,${SCENARIO_CREATE}|min:8|same:password`,
-      userId: `required_when:scenario,${SCENARIO_GET_KAHA}`,
+      userId: `required_when:scenario,${SCENARIO_GET_KAHA}|required_when:scenario,${SCENARIO_GET_STATISTICS}`,
     }
   }
 
@@ -110,6 +113,40 @@ class UserOperation extends Operation {
       }
 
       return kaha
+    } catch(e) {
+      this.addError(HTTPResponse.STATUS_INTERNAL_SERVER_ERROR, e.message)
+
+      return false
+    }
+  }
+
+  /**
+   * Get user statistics.
+   */
+  * getUserStatistics() {
+    this.scenario = SCENARIO_GET_STATISTICS
+    let isValid = yield this.validate()
+
+    if (!isValid) {
+      return false
+    }
+
+    try {
+      const transactions = yield Transaction.query().where('userId', this.userId).with('type').fetch();
+
+      let topPayin = 0;
+      let topPayout = 0;
+
+      for(let transaction of transactions) {
+        const { amount, type } = transaction.toJSON()
+        if(type.type == TransactionType.TYPE_INFLOW) {
+          topPayin = topPayin > amount ? topPayin : amount
+        } else {
+          topPayout = topPayout > amount ? topPayout : amount
+        }
+      }
+
+      return { topPayin, topPayout, transactionsCount: transactions.size() }
     } catch(e) {
       this.addError(HTTPResponse.STATUS_INTERNAL_SERVER_ERROR, e.message)
 

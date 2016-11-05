@@ -46,6 +46,24 @@ class UsersController {
 
     response.json(kaha)
   }
+
+  * getUserStatistics(request, response) {
+    const op = new UserOperation()
+
+    op.userId = request.authUser.id
+
+    let statistics = yield op.getUserStatistics()
+
+    if (statistics === false) {
+      let error = op.getFirstError()
+
+      throw new HttpException(error.message, error.code)
+
+      return
+    }
+
+    response.json(statistics)
+  }
 }
 
 module.exports = UsersController

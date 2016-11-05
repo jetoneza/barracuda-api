@@ -62,6 +62,32 @@ describe("Testing users routes.", () => {
         .expect(401, done)
     });
   })
+
+  context("GET /user/statistics", () => {
+    it("should return a status 200", function (done) {
+      request(Server)
+        .get('/user/statistics')
+        .set('Authorization', `Bearer abcdefg123`)
+        .expect(res => {
+          const response = res.body
+          expect(response).to.be.not.null
+          expect(response).to.have.property('topPayin')
+          expect(response).to.have.property('topPayout')
+          expect(response).to.have.property('transactionsCount')
+        })
+        .expect(200, done)
+    });
+
+    it("should return a status 401", function (done) {
+      request(Server)
+        .get('/user/statistics')
+        .expect(res => {
+          const response = res.body
+          expect(response).to.be.not.null
+        })
+        .expect(401, done)
+    });
+  })
 })
 
 

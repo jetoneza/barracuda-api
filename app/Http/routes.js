@@ -33,6 +33,7 @@ Route.post('/auth/access-token', 'AuthController.accessToken')
  */
 Route.post('/users', 'UsersController.store')
 Route.get('/user/kaha', 'UsersController.getUserKaha').middleware('auth')
+Route.get('/user/statistics', 'UsersController.getUserStatistics').middleware('auth')
 
 /*
  |--------------------------------------------------------------------------
