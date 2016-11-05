@@ -28,6 +28,24 @@ class UsersController {
       user,
     })
   }
+
+  * getUserKaha(request, response) {
+    const op = new UserOperation()
+
+    op.userId = request.authUser.id
+
+    let kaha = yield op.getUserKaha()
+
+    if (kaha === false) {
+      let error = op.getFirstError()
+
+      throw new HttpException(error.message, error.code)
+
+      return
+    }
+
+    response.json(kaha)
+  }
 }
 
 module.exports = UsersController

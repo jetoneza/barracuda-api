@@ -19,7 +19,6 @@ describe("Testing users routes.", () => {
           expect(response).to.be.not.null
           expect(response).to.have.deep.property('token')
           expect(response).to.have.deep.property('user')
-          expect(response).to.have.deep.property('user.kaha')
         })
         .expect(200, done)
     });
@@ -37,6 +36,30 @@ describe("Testing users routes.", () => {
           expect(response).to.be.not.null
         })
         .expect(400, done)
+    });
+  })
+
+  context("GET /user/kaha", () => {
+    it("should return a status 200", function (done) {
+      request(Server)
+        .get('/user/kaha')
+        .set('Authorization', `Bearer abcdefg123`)
+        .expect(res => {
+          const response = res.body
+          expect(response).to.be.not.null
+          expect(response).to.have.deep.property('amount')
+        })
+        .expect(200, done)
+    });
+
+    it("should return a status 401", function (done) {
+      request(Server)
+        .get('/user/kaha')
+        .expect(res => {
+          const response = res.body
+          expect(response).to.be.not.null
+        })
+        .expect(401, done)
     });
   })
 })

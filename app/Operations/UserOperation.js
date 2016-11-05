@@ -11,6 +11,10 @@ const randomString = use('randomstring')
 const Token = use('App/Model/Token')
 const Kaha = use('App/Model/Kaha')
 
+const SCENARIO_DEFAULT = 'default'
+const SCENARIO_CREATE = 'create'
+const SCENARIO_GET_KAHA = 'getKaha'
+
 /**
  * Users Operation
  */
@@ -18,6 +22,8 @@ class UserOperation extends Operation {
 
   constructor() {
     super()
+    this.scenario = SCENARIO_DEFAULT
+    this.userId = null
     this.username = null
     this.email = null
     this.password = null
@@ -26,10 +32,11 @@ class UserOperation extends Operation {
 
   get rules() {
     return {
-      username: `required|alpha_numeric|unique:users,username`,
-      email: `required|email|unique:users,email`,
-      password: 'required|min:8',
-      confirmPassword: 'required|min:8|same:password'
+      username: `required_when:scenario,${SCENARIO_CREATE}|alpha_numeric|unique:users,username`,
+      email: `required_when:scenario,${SCENARIO_CREATE}|email|unique:users,email`,
+      password: `required_when:scenario,${SCENARIO_CREATE}|min:8`,
+      confirmPassword: `required_when:scenario,${SCENARIO_CREATE}|min:8|same:password`,
+      userId: `required_when:scenario,${SCENARIO_GET_KAHA}`,
     }
   }
 
@@ -38,6 +45,7 @@ class UserOperation extends Operation {
    * Store new user.
    */
   * store() {
+    this.scenario = SCENARIO_CREATE
     let isValid = yield this.validate()
 
     if (!isValid) {
@@ -74,9 +82,34 @@ class UserOperation extends Operation {
 
       yield kaha.save()
 
-      yield user.related('kaha').load()
-
       return user
+    } catch(e) {
+      this.addError(HTTPResponse.STATUS_INTERNAL_SERVER_ERROR, e.message)
+
+      return false
+    }
+  }
+
+  /**
+   * Get user kaha.
+   */
+  * getUserKaha() {
+    this.scenario = SCENARIO_GET_KAHA
+    let isValid = yield this.validate()
+
+    if (!isValid) {
+      return false
+    }
+
+    try {
+      const kaha = yield Kaha.findBy('userId', this.userId)
+
+      if(!kaha) {
+        this.addError(HTTPResponse.STATUS_NOT_FOUND, 'Kaha not found.')
+        return false
+      }
+
+      return kaha
     } catch(e) {
       this.addError(HTTPResponse.STATUS_INTERNAL_SERVER_ERROR, e.message)
 
