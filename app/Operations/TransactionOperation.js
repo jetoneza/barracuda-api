@@ -10,6 +10,7 @@ const TransactionType = use('App/Model/TransactionType')
 const SCENARIO_DEFAULT = 'default'
 const SCENARIO_CREATE = 'create'
 const SCENARIO_UPDATE = 'update'
+const SCENARIO_CONFIRM = 'confirm'
 
 /**
  * Transaction Operation
@@ -30,7 +31,7 @@ class TransactionOperation extends Operation {
   get rules() {
     return {
       userId: `required`,
-      id: `required_when:scenario,${SCENARIO_UPDATE}`,
+      id: `required_when:scenario,${SCENARIO_UPDATE}|required_when:scenario,${SCENARIO_CONFIRM}`,
       typeId: `required_when:scenario,${SCENARIO_CREATE}|required_when:scenario,${SCENARIO_UPDATE}`,
       amount: `required_when:scenario,${SCENARIO_CREATE}|required_when:scenario,${SCENARIO_UPDATE}`,
     }
@@ -163,6 +164,83 @@ class TransactionOperation extends Operation {
       yield transaction.save()
 
       yield transaction.related('user').load()
+      yield transaction.related('type').load()
+
+      return transaction
+    } catch(e) {
+      this.addError(HTTPResponse.STATUS_INTERNAL_SERVER_ERROR, e.message)
+
+      return false
+    }
+  }
+
+  /**
+   * Confirm transaction.
+   */
+  * confirm() {
+    this.scenario = SCENARIO_CONFIRM
+    let isValid = yield this.validate()
+
+    if (!isValid) {
+      return false
+    }
+
+    try {
+      const transaction = yield Transaction.find(this.id)
+
+      if(!transaction) {
+        this.addError(HTTPResponse.STATUS_NOT_FOUND, 'Transaction not found.')
+        return false
+      }
+
+      if(transaction.confirmed) {
+        this.addError(HTTPResponse.STATUS_BAD_REQUEST, 'Transaction is already confirmed.')
+        return false
+      }
+
+      if(transaction.userId != this.userId) {
+        this.addError(HTTPResponse.STATUS_UNAUTHORIZED, 'You can only confirm your own transaction.')
+        return false
+      }
+
+      const user = yield User.find(this.userId)
+
+      if(!user) {
+        this.addError(HTTPResponse.STATUS_NOT_FOUND, 'User not found.')
+        return false
+      }
+
+      const kaha = yield Kaha.findBy('userId', this.userId)
+
+      if(!kaha) {
+        this.addError(HTTPResponse.STATUS_NOT_FOUND, 'Kaha not found.')
+        return false
+      }
+
+      const transactionType = yield TransactionType.find(transaction.typeId)
+
+      if(!transactionType) {
+        this.addError(HTTPResponse.STATUS_NOT_FOUND, 'Transaction type not found.')
+        return false
+      }
+
+      if(transactionType.type == TransactionType.TYPE_OUTFLOW) {
+        if((kaha.amount - transaction.amount) < 0) {
+          this.addError(HTTPResponse.STATUS_BAD_REQUEST, 'Insufficient balance.')
+          return false
+        }
+      }
+
+      transaction.confirmed = true
+
+      yield transaction.save()
+
+      kaha.amount = transactionType.type == TransactionType.TYPE_INFLOW ? (kaha.amount + transaction.amount) : (kaha.amount - transaction.amount)
+
+      yield kaha.save()
+
+      yield transaction.related('user').load()
+      yield transaction.related('kaha').load()
       yield transaction.related('type').load()
 
       return transaction

@@ -74,6 +74,16 @@ class UserSeeder {
         amount: 500,
         confirmed: false,
       },
+      {
+        typeId: 1,
+        amount: 5000,
+        confirmed: false,
+      },
+      {
+        typeId: 4,
+        amount: 25000,
+        confirmed: false,
+      },
     ];
     let transaction;
     for(let txn of transactions) {

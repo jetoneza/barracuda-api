@@ -102,6 +102,46 @@ describe("Testing transactions routes.", () => {
         .expect(200, done)
     });
   })
+
+  context("POST /transactions/:id/confirm", () => {
+    it("should return a status 200", function (done) {
+      request(Server)
+        .post('/transactions/6/confirm')
+        .set('Authorization', `Bearer abcdefg123`)
+        .send({})
+        .expect(res => {
+          const response = res.body
+          expect(response).to.be.not.null
+        })
+        .expect(200, done)
+    });
+
+    it("should return a status 400", function (done) {
+      request(Server)
+        .post('/transactions/7/confirm')
+        .set('Authorization', `Bearer abcdefg123`)
+        .send({})
+        .expect(res => {
+          const response = res.body
+          expect(response).to.be.not.null
+          expect(response.errors[0].message).to.equal('Insufficient balance.')
+        })
+        .expect(400, done)
+    });
+
+    it("should return a status 400", function (done) {
+      request(Server)
+        .post('/transactions/1/confirm')
+        .set('Authorization', `Bearer abcdefg123`)
+        .send({})
+        .expect(res => {
+          const response = res.body
+          expect(response).to.be.not.null
+          expect(response.errors[0].message).to.equal('Transaction is already confirmed.')
+        })
+        .expect(400, done)
+    });
+  })
 })
 
 
