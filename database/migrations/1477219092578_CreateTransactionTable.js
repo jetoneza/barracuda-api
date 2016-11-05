@@ -10,7 +10,7 @@ class TransactionsTableSchema extends Schema {
       table.integer('userId').unsigned().references('id').inTable('users').onDelete('CASCADE').onUpdate('NO ACTION')
       table.integer('kahaId').unsigned().references('id').inTable('kahas')
       table.integer('typeId').unsigned().references('id').inTable('transaction_types')
-      table.float('amount').notNullable().default(0)
+      table.decimal('amount', 13, 2).notNullable().default(0)
       table.timestamps()
     })
   }
