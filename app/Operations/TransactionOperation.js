@@ -11,6 +11,7 @@ const SCENARIO_DEFAULT = 'default'
 const SCENARIO_CREATE = 'create'
 const SCENARIO_UPDATE = 'update'
 const SCENARIO_CONFIRM = 'confirm'
+const SCENARIO_DELETE = 'delete'
 
 /**
  * Transaction Operation
@@ -31,7 +32,7 @@ class TransactionOperation extends Operation {
   get rules() {
     return {
       userId: `required`,
-      id: `required_when:scenario,${SCENARIO_UPDATE}|required_when:scenario,${SCENARIO_CONFIRM}`,
+      id: `required_when:scenario,${SCENARIO_UPDATE}|required_when:scenario,${SCENARIO_CONFIRM}|required_when:scenario,${SCENARIO_DELETE}`,
       typeId: `required_when:scenario,${SCENARIO_CREATE}|required_when:scenario,${SCENARIO_UPDATE}`,
       amount: `required_when:scenario,${SCENARIO_CREATE}|required_when:scenario,${SCENARIO_UPDATE}`,
     }
@@ -244,6 +245,42 @@ class TransactionOperation extends Operation {
       yield transaction.related('type').load()
 
       return transaction
+    } catch(e) {
+      this.addError(HTTPResponse.STATUS_INTERNAL_SERVER_ERROR, e.message)
+
+      return false
+    }
+  }
+
+  * delete() {
+    this.scenario = SCENARIO_DELETE
+    let isValid = yield this.validate()
+
+    if (!isValid) {
+      return false
+    }
+
+    try {
+      const transaction = yield Transaction.find(this.id)
+
+      if(!transaction) {
+        this.addError(HTTPResponse.STATUS_NOT_FOUND, 'Transaction not found.')
+        return false
+      }
+
+      if(transaction.confirmed) {
+        this.addError(HTTPResponse.STATUS_BAD_REQUEST, 'You can not delete confirmed transaction.')
+        return false
+      }
+
+      if(transaction.userId != this.userId) {
+        this.addError(HTTPResponse.STATUS_UNAUTHORIZED, 'You can only delete your own transaction.')
+        return false
+      }
+
+      yield transaction.delete()
+
+      return {success: true}
     } catch(e) {
       this.addError(HTTPResponse.STATUS_INTERNAL_SERVER_ERROR, e.message)
 

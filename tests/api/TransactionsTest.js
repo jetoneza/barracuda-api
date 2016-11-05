@@ -142,6 +142,33 @@ describe("Testing transactions routes.", () => {
         .expect(400, done)
     });
   })
+
+  context("DELETE /transactions/:id", () => {
+    it("should return a status 200", function (done) {
+      request(Server)
+        .delete('/transactions/7')
+        .set('Authorization', `Bearer abcdefg123`)
+        .send({})
+        .expect(res => {
+          const response = res.body
+          expect(response).to.be.not.null
+        })
+        .expect(200, done)
+    });
+
+    it("should return a status 400", function (done) {
+      request(Server)
+        .delete('/transactions/1')
+        .set('Authorization', `Bearer abcdefg123`)
+        .send({})
+        .expect(res => {
+          const response = res.body
+          expect(response).to.be.not.null
+          expect(response.errors[0].message).to.equal('You can not delete confirmed transaction.')
+        })
+        .expect(400, done)
+    });
+  })
 })
 
 

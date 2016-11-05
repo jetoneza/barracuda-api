@@ -44,6 +44,25 @@ class TransactionsController {
     response.json(transaction)
   }
 
+  * delete(request, response) {
+    const op = new TransactionOperation()
+
+    op.userId = request.authUser.id
+    op.id = request.param('id')
+
+    let transaction = yield op.delete()
+
+    if (transaction === false) {
+      let error = op.getFirstError()
+
+      throw new HttpException(error.message, error.code)
+
+      return
+    }
+
+    response.json(transaction)
+  }
+
   * confirm(request, response) {
     const op = new TransactionOperation()
 
