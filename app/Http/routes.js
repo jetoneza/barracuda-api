@@ -46,6 +46,7 @@ Route.put('/transactions/:id', 'TransactionsController.update').middleware('auth
 Route.delete('/transactions/:id', 'TransactionsController.delete').middleware('auth')
 Route.post('/transactions/:id/confirm', 'TransactionsController.confirm').middleware('auth')
 Route.get('/transactions/types', 'TransactionsController.getTypes').middleware('auth')
+Route.get('/transactions/dataset', 'TransactionsController.dataset').middleware('auth')
 
 /*
  |--------------------------------------------------------------------------

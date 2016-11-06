@@ -21,6 +21,7 @@
     "adonis-lucid": "^3.0.8",
     "adonis-middleware": "^1.0.8",
     "adonis-validation-provider": "^3.0.4",
+    "moment": "^2.15.2",
     "mysql": "^2.11.1",
     "node-exceptions": "^1.0.3",
     "randomstring": "^1.1.5",
