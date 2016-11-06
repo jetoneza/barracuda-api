@@ -64,6 +64,23 @@ class UsersController {
 
     response.json(statistics)
   }
+
+  * dataset(request, response) {
+    const op = new UserOperation()
+    op.userId = request.authUser.id
+
+    let dataset = yield op.dataset()
+
+    if(dataset === false) {
+      let error = op.getFirstError()
+
+      throw new HttpException(error.message, error.code)
+
+      return
+    }
+
+    response.json(dataset)
+  }
 }
 
 module.exports = UsersController

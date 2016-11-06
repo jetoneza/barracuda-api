@@ -1,7 +1,5 @@
 'use strict'
 
-const moment = require('moment')
-
 const HTTPResponse = use('App/HTTPResponse')
 const Operation = use('App/Operations/Operation')
 const User = use('App/Model/User')
@@ -55,61 +53,6 @@ class TransactionOperation extends Operation {
       let transactions = yield Transaction.query().where('userId', this.userId).with('type').paginate(this.page, this.pageSize)
 
       return transactions
-    } catch(e) {
-      this.addError(HTTPResponse.STATUS_INTERNAL_SERVER_ERROR, e.message)
-
-      return false
-    }
-  }
-
-  /**
-   * Get transactions dataset for graph.
-   */
-  * dataset() {
-    let isValid = yield this.validate()
-
-    if (!isValid) {
-      return false
-    }
-
-    try {
-      const monthsCount = 12;
-
-      let endDate = moment();
-
-      let startDate = moment().subtract(monthsCount - 1, 'months').startOf('month');
-      let dateFormat = 'YYYY-MM-DD hh:mm:ss';
-
-      startDate = startDate.format(dateFormat)
-      endDate = endDate.format(dateFormat)
-
-      let transactions = yield Transaction.query().where('userId', this.userId).with('type').where('confirmed', true).where('created_at', '>=', startDate).where('created_at', '<=', endDate).fetch()
-
-      let months = [];
-      for (let i = 0; i < monthsCount; i++) {
-        months.push({
-          start: moment(startDate).add(i, 'months').startOf('month').format(dateFormat),
-          end: moment(startDate).add(i, 'months').endOf('month').format(dateFormat),
-          month: moment(startDate).add(i, 'months').startOf('month').format("MMM 'YY"),
-          amount: 0,
-        });
-      }
-
-      months.forEach(month => {
-        let start = moment(month.start)
-        let end = moment(month.end)
-        let amount = 0;
-        transactions.forEach(transaction => {
-          let createdAt = moment(transaction.created_at);
-          const { type } = transaction.toJSON()
-          if ((createdAt.isAfter(start) && createdAt.isBefore(end)) || createdAt.isSame(start) || createdAt.isSame(end)) {
-            amount = type.type == TransactionType.TYPE_INFLOW ? (amount + transaction.amount) : (amount - transaction.amount)
-            month.amount = amount
-          }
-        });
-      });
-
-      return months
     } catch(e) {
       this.addError(HTTPResponse.STATUS_INTERNAL_SERVER_ERROR, e.message)
 

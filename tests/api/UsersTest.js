@@ -88,6 +88,26 @@ describe("Testing users routes.", () => {
         .expect(401, done)
     });
   })
+
+  context("GET /user/dataset", () => {
+    it("should return a status 200", function (done) {
+      request(Server)
+        .get('/user/dataset')
+        .set('Authorization', `Bearer abcdefg123`)
+        .expect(res => {
+          const response = res.body
+          expect(response).to.be.not.null
+          expect(response).to.be.array
+          expect(response.length).to.not.equal(0)
+          expect(response.length).to.equal(12)
+          expect(response[0]).to.have.deep.property('amount')
+          expect(response[0]).to.have.deep.property('start')
+          expect(response[0]).to.have.deep.property('end')
+          expect(response[0]).to.have.deep.property('month')
+        })
+        .expect(200, done)
+    });
+  })
 })
 
 

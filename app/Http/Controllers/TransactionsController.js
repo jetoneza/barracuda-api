@@ -103,23 +103,6 @@ class TransactionsController {
     response.json(transactions)
   }
 
-  * dataset(request, response) {
-    const op = new TransactionOperation()
-    op.userId = request.authUser.id
-
-    let dataset = yield op.dataset()
-
-    if(dataset === false) {
-      let error = op.getFirstError()
-
-      throw new HttpException(error.message, error.code)
-
-      return
-    }
-
-    response.json(dataset)
-  }
-
   * getTypes(request, response) {
     const op = new TransactionOperation()
 

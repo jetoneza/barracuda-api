@@ -34,6 +34,7 @@ Route.post('/auth/access-token', 'AuthController.accessToken')
 Route.post('/users', 'UsersController.store')
 Route.get('/user/kaha', 'UsersController.getUserKaha').middleware('auth')
 Route.get('/user/statistics', 'UsersController.getUserStatistics').middleware('auth')
+Route.get('/user/dataset', 'UsersController.dataset').middleware('auth')
 
 /*
  |--------------------------------------------------------------------------
@@ -46,7 +47,6 @@ Route.put('/transactions/:id', 'TransactionsController.update').middleware('auth
 Route.delete('/transactions/:id', 'TransactionsController.delete').middleware('auth')
 Route.post('/transactions/:id/confirm', 'TransactionsController.confirm').middleware('auth')
 Route.get('/transactions/types', 'TransactionsController.getTypes').middleware('auth')
-Route.get('/transactions/dataset', 'TransactionsController.dataset').middleware('auth')
 
 /*
  |--------------------------------------------------------------------------

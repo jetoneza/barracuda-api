@@ -1,5 +1,7 @@
 'use strict'
 
+const moment = require('moment')
+
 const Database = use('Database')
 const Encryption = use('Encryption')
 const Hash = use('Hash')
@@ -12,6 +14,7 @@ const Token = use('App/Model/Token')
 const Kaha = use('App/Model/Kaha')
 const Transaction = use('App/Model/Transaction')
 const TransactionType = use('App/Model/TransactionType')
+const KahaLog = use('App/Model/KahaLog')
 
 const SCENARIO_DEFAULT = 'default'
 const SCENARIO_CREATE = 'create'
@@ -150,6 +153,65 @@ class UserOperation extends Operation {
       }
 
       return { topPayin, topPayout, transactionsCount: transactions.size() }
+    } catch(e) {
+      this.addError(HTTPResponse.STATUS_INTERNAL_SERVER_ERROR, e.message)
+
+      return false
+    }
+  }
+
+  /**
+   * Get logs dataset for graph.
+   */
+  * dataset() {
+    let isValid = yield this.validate()
+
+    if (!isValid) {
+      return false
+    }
+
+    try {
+      const monthsCount = 12;
+
+      let endDate = moment();
+
+      let startDate = moment().subtract(monthsCount - 1, 'months').startOf('month');
+      let dateFormat = 'YYYY-MM-DD hh:mm:ss';
+
+      startDate = startDate.format(dateFormat)
+      endDate = endDate.format(dateFormat)
+
+      let logs = yield KahaLog.query().where('userId', this.userId).where('created_at', '>=', startDate).where('created_at', '<=', endDate).fetch()
+
+      let months = [];
+      for (let i = 0; i < monthsCount; i++) {
+        months.push({
+          start: moment(startDate).add(i, 'months').startOf('month').format(dateFormat),
+          end: moment(startDate).add(i, 'months').endOf('month').format(dateFormat),
+          month: moment(startDate).add(i, 'months').startOf('month').format("MMM 'YY"),
+          amount: 0,
+        });
+      }
+
+      let lastBalance = 0
+      months.forEach(month => {
+        let start = moment(month.start)
+        let end = moment(month.end)
+        let amount = 0
+        let size = 0
+        logs.forEach(log => {
+          let createdAt = moment(log.created_at);
+          if ((createdAt.isAfter(start) && createdAt.isBefore(end)) || createdAt.isSame(start) || createdAt.isSame(end)) {
+            amount = amount + log.amount
+            size++
+          }
+        });
+        amount = size == 0 ? lastBalance : (amount / size)
+        month.amount = amount
+        lastBalance = amount
+      });
+
+      return months
     } catch(e) {
       this.addError(HTTPResponse.STATUS_INTERNAL_SERVER_ERROR, e.message)
 
