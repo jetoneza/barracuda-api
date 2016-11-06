@@ -19,6 +19,10 @@ class User extends Lucid {
   transactions() {
     return this.hasMany('App/Model/Transaction', 'id', 'userId')
   }
+
+  logs() {
+    return this.hasMany('App/Model/KahaLog', 'id', 'userId')
+  }
 }
 
 module.exports = User

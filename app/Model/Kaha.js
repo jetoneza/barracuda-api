@@ -10,6 +10,10 @@ class Kaha extends Lucid {
   transactions() {
     return this.hasMany('App/Model/Transaction', 'id', 'kahaId')
   }
+
+  logs() {
+    return this.hasMany('App/Model/KahaLog', 'id', 'kahaId')
+  }
 }
 
 module.exports = Kaha

@@ -2,7 +2,7 @@
 
 const Lucid = use('Lucid')
 
-class Transaction extends Lucid {
+class KahaLog extends Lucid {
   static get hidden () {
     return ['userId', 'kahaId', 'typeId']
   }
@@ -15,13 +15,9 @@ class Transaction extends Lucid {
     return this.belongsTo('App/Model/Kaha', 'id', 'kahaId')
   }
 
-  type() {
-    return this.belongsTo('App/Model/TransactionType', 'id', 'typeId')
-  }
-
-  log() {
-    return this.belongsTo('App/Model/KahaLog', 'id', 'logId')
+  transaction() {
+    return this.hasOne('App/Model/Transaction', 'id', 'logId')
   }
 }
 
-module.exports = Transaction
+module.exports = KahaLog
