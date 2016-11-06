@@ -8,6 +8,7 @@ const UserProperty = use('App/Model/UserProperty')
 const Kaha = use('App/Model/Kaha')
 const Token = use('App/Model/Token')
 const Transaction = use('App/Model/Transaction')
+const KahaLog = use('App/Model/KahaLog')
 
 class UserSeeder {
 
@@ -98,6 +99,40 @@ class UserSeeder {
       transaction.userId = user.id
       transaction.kahaId = kaha.id
       transaction.confirmed = txn.confirmed
+
+      yield transaction.save()
+    }
+
+    // Create logs
+    const logs = [
+      {
+        transactionId: 1,
+        amount: 10000,
+      },
+      {
+        transactionId: 2,
+        amount: 18000,
+      },
+      {
+        transactionId: 3,
+        amount: 10488,
+      },
+      {
+        transactionId: 4,
+        amount: 10988,
+      },
+    ]
+    let log;
+    for(let log of logs) {
+      let newLog = new KahaLog()
+      newLog.amount = log.amount
+      newLog.userId = user.id
+      newLog.kahaId = kaha.id
+
+      yield newLog.save()
+
+      transaction = yield Transaction.find(log.transactionId)
+      transaction.logId = newLog.id
 
       yield transaction.save()
     }

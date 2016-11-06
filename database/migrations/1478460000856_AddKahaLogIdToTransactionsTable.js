@@ -12,6 +12,7 @@ class TransactionsTableSchema extends Schema {
 
   down () {
     this.table('transactions', (table) => {
+      table.dropForeign('logId')
       table.dropColumn('logId')
     })
   }

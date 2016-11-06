@@ -8,6 +8,7 @@ const User = use('App/Model/User')
 const Kaha = use('App/Model/Kaha')
 const Transaction = use('App/Model/Transaction')
 const TransactionType = use('App/Model/TransactionType')
+const KahaLog = use('App/Model/KahaLog')
 
 const SCENARIO_DEFAULT = 'default'
 const SCENARIO_CREATE = 'create'
@@ -289,13 +290,21 @@ class TransactionOperation extends Operation {
         }
       }
 
-      transaction.confirmed = true
-
-      yield transaction.save()
-
       kaha.amount = transactionType.type == TransactionType.TYPE_INFLOW ? (kaha.amount + transaction.amount) : (kaha.amount - transaction.amount)
 
       yield kaha.save()
+
+      const log = new KahaLog()
+      log.userId = user.id
+      log.kahaId = kaha.id
+      log.amount = kaha.amount
+
+      yield log.save()
+
+      transaction.confirmed = true
+      transaction.logId = log.id
+
+      yield transaction.save()
 
       yield transaction.related('user').load()
       yield transaction.related('kaha').load()
