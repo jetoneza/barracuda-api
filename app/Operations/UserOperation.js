@@ -193,22 +193,25 @@ class UserOperation extends Operation {
         });
       }
 
-      let lastBalance = 0
       months.forEach(month => {
         let start = moment(month.start)
         let end = moment(month.end)
-        let amount = 0
-        let size = 0
+        let latestLog = null
         logs.forEach(log => {
           let createdAt = moment(log.created_at);
           if ((createdAt.isAfter(start) && createdAt.isBefore(end)) || createdAt.isSame(start) || createdAt.isSame(end)) {
-            amount = amount + log.amount
-            size++
+            if(!latestLog) {
+              latestLog = log
+            } else {
+              let logCreatedAt = moment(log.created_at)
+              let latestLogCreatedAt = moment(latestLog.created_at)
+              if(logCreatedAt.isAfter(latestLogCreatedAt)) {
+                latestLog = log
+              }
+            }
           }
         });
-        amount = size == 0 ? lastBalance : (amount / size)
-        month.amount = amount
-        lastBalance = amount
+        month.amount = latestLog ? latestLog.amount : 0
       });
 
       return months
