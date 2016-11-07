@@ -43,6 +43,10 @@ module.exports = function (callback) {
       const Helpers = use('Helpers')
       const Env = use('Env')
 
+      // Set Test Env
+      Env.set('TEST_ENV', true)
+      Env.set('DB_DATABASE', 'barracuda_test')
+
       Helpers.load(packageFile, fold.Ioc)
 
       require('./events')
@@ -100,11 +104,15 @@ module.exports = function (callback) {
       });
 
       // Terminate Database connection and Web Server
-      runner.on('end', function () {
-        let Database = use('Database')
-        Database.close()
-        Server.close()
-      })
+      try {
+        runner.on('end', function () {
+          let Database = use('Database')
+          Database.close()
+          Server.getInstance().close()
+        })
+      } catch (e) {
+        console.error(e)
+      }
     }).catch((error) => console.error(error.stack))
 }
 

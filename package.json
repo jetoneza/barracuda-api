@@ -42,6 +42,7 @@
     "co-mocha": "^1.1.2",
     "nodemon": "^1.11.0",
     "mocha": "^2.5.3",
+    "shelljs": "^0.7.4",
     "standard": "^8.3.0",
     "supertest": "^1.2.0"
   }
