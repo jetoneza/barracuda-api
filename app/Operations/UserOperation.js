@@ -173,7 +173,7 @@ class UserOperation extends Operation {
     try {
       const monthsCount = 12;
 
-      let endDate = moment();
+      let endDate = moment().endOf('month');
 
       let startDate = moment().subtract(monthsCount - 1, 'months').startOf('month');
       let dateFormat = 'YYYY-MM-DD hh:mm:ss';
