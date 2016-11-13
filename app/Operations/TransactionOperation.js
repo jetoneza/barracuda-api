@@ -103,6 +103,7 @@ class TransactionOperation extends Operation {
       transaction.kahaId = kaha.id
       transaction.typeId = transactionType.id
       transaction.amount = this.amount
+      transaction.notes = this.notes
 
       yield transaction.save()
 

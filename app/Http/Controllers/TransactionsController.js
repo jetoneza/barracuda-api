@@ -9,6 +9,7 @@ class TransactionsController {
     op.userId = request.authUser.id
     op.typeId = request.input('typeId')
     op.amount = request.input('amount')
+    op.notes = request.input('notes')
 
     let transaction = yield op.store()
 
