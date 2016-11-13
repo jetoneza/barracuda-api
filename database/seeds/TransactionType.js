@@ -11,15 +11,19 @@ class TransactionTypeSeeder {
         type: 'inflow'
       },
       {
+        name: 'Payable',
+        type: 'outflow'
+      },
+      {
+        name: 'Spend',
+        type: 'outflow'
+      },
+      {
         name: 'Donation',
         type: 'inflow'
       },
       {
         name: 'Offering',
-        type: 'outflow'
-      },
-      {
-        name: 'Spend',
         type: 'outflow'
       },
     ];
