@@ -31,6 +31,7 @@ class TransactionsController {
     op.id = request.param('id')
     op.typeId = request.input('typeId')
     op.amount = request.input('amount')
+    op.notes = request.input('notes')
 
     let transaction = yield op.update()
 
