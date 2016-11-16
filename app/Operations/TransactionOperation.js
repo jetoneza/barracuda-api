@@ -50,7 +50,7 @@ class TransactionOperation extends Operation {
     }
 
     try {
-      let transactions = yield Transaction.query().where('userId', this.userId).with('type').paginate(this.page, this.pageSize)
+      let transactions = yield Transaction.query().where('userId', this.userId).with('type').orderBy('created_at', 'desc').paginate(this.page, this.pageSize)
 
       return transactions
     } catch(e) {
