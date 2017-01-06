@@ -193,6 +193,7 @@ class UserOperation extends Operation {
         });
       }
 
+      let lastMonth = null
       months.forEach(month => {
         let start = moment(month.start)
         let end = moment(month.end)
@@ -210,8 +211,19 @@ class UserOperation extends Operation {
               }
             }
           }
-        });
+        })
+
         month.amount = latestLog ? latestLog.amount : 0
+
+        // If no latest log this month
+        // use data of last month
+        if (!latestLog && lastMonth) {
+          if (endDate === month.end) {
+            month.amount = lastMonth.amount
+          }
+        }
+
+        lastMonth = month
       });
 
       return months
