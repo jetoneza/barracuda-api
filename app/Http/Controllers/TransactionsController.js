@@ -85,14 +85,14 @@ class TransactionsController {
   }
 
   * list(request, response) {
-    const { page, pageSize, startDate, endDate } = request.all()
+    let { page, pageSize, startDate, endDate  } = request.all()
     const op = new TransactionOperation()
 
     op.page = page ? page : 1
     op.pageSize = pageSize ? pageSize : 10
     op.userId = request.authUser.id
-    op.startDate = startDate
-    op.endDate = endDate
+    op.startDate = parseInt(startDate) ? startDate : null
+    op.endDate = parseInt(endDate) ? endDate : null
 
     let transactions = yield op.list()
 

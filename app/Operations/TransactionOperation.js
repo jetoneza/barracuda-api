@@ -55,16 +55,12 @@ class TransactionOperation extends Operation {
 
     try {
       let query = Transaction.query().where('userId', this.userId).with('type')
-      console.log('get list')
 
       if (this.startDate && this.endDate) {
-        console.log('entra', this.startDate, this.endDate)
         let dateFormat = 'YYYY-MM-DD HH:mm:ss'
 
         const start = moment(this.startDate).startOf('day').format(dateFormat)
         const end = moment(this.endDate).endOf('day').format(dateFormat)
-
-        console.log(start, end)
 
         query = query.where('created_at', '>=', start).where('created_at', '<=', end)
       }
