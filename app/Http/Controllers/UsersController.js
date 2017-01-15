@@ -48,9 +48,12 @@ class UsersController {
   }
 
   * getUserStatistics(request, response) {
+    let { startDate, endDate } = request.all()
     const op = new UserOperation()
 
     op.userId = request.authUser.id
+    op.startDate = parseInt(startDate) ? startDate : null
+    op.endDate = parseInt(endDate) ? endDate : null
 
     let statistics = yield op.getUserStatistics()
 

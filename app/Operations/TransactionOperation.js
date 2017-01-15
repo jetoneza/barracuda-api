@@ -57,7 +57,7 @@ class TransactionOperation extends Operation {
       let query = Transaction.query().where('userId', this.userId).with('type')
 
       if (this.startDate && this.endDate) {
-        let dateFormat = 'YYYY-MM-DD HH:mm:ss'
+        const dateFormat = 'YYYY-MM-DD HH:mm:ss'
 
         const start = moment(this.startDate).startOf('day').format(dateFormat)
         const end = moment(this.endDate).endOf('day').format(dateFormat)

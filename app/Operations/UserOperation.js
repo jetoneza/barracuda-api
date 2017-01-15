@@ -34,6 +34,8 @@ class UserOperation extends Operation {
     this.email = null
     this.password = null
     this.confirmPassword = null
+    this.startDate = null
+    this.endDate = null
   }
 
   get rules() {
@@ -135,24 +137,42 @@ class UserOperation extends Operation {
     }
 
     try {
-      const transactions = yield Transaction.query().where('userId', this.userId).with('type').fetch();
+      let query = Transaction.query().where('userId', this.userId).with('type')
 
-      let topPayin = 0;
-      let topPayout = 0;
+      if (this.startDate && this.endDate) {
+        const dateFormat = 'YYYY-MM-DD HH:mm:ss'
 
-      for(let transaction of transactions) {
-        if(transaction.confirmed) {
-          const { amount, type } = transaction.toJSON()
+        const start = moment(this.startDate).startOf('day').format(dateFormat)
+        const end = moment(this.endDate).endOf('day').format(dateFormat)
 
-          if(type.type == TransactionType.TYPE_INFLOW) {
-            topPayin = topPayin > amount ? topPayin : amount
-          } else {
-            topPayout = topPayout > amount ? topPayout : amount
-          }
-        }
+        query = query.where('created_at', '>=', start).where('created_at', '<=', end)
       }
 
-      return { topPayin, topPayout, transactionsCount: transactions.size() }
+      const transactions = yield query.fetch()
+
+      let topPayin = 0
+      let topPayout = 0
+      let totalPayin = 0
+      let totalPayout = 0
+
+      for(let transaction of transactions) {
+        if (!transaction.confirmed) {
+          continue
+        }
+
+        const { amount, type } = transaction.toJSON()
+
+        if(type.type == TransactionType.TYPE_INFLOW) {
+          topPayin = topPayin > amount ? topPayin : amount
+          totalPayin += amount
+          continue
+        }
+
+        topPayout = topPayout > amount ? topPayout : amount
+        totalPayout += amount
+      }
+
+      return { totalPayin, totalPayout, topPayin, topPayout, transactionsCount: transactions.size() }
     } catch(e) {
       this.addError(HTTPResponse.STATUS_INTERNAL_SERVER_ERROR, e.message)
 
@@ -171,26 +191,26 @@ class UserOperation extends Operation {
     }
 
     try {
-      const monthsCount = 12;
+      const monthsCount = 12
 
-      let endDate = moment().endOf('month');
+      let endDate = moment().endOf('month')
 
-      let startDate = moment().subtract(monthsCount - 1, 'months').startOf('month');
-      let dateFormat = 'YYYY-MM-DD HH:mm:ss';
+      let startDate = moment().subtract(monthsCount - 1, 'months').startOf('month')
+      let dateFormat = 'YYYY-MM-DD HH:mm:ss'
 
       startDate = startDate.format(dateFormat)
       endDate = endDate.format(dateFormat)
 
       let logs = yield KahaLog.query().where('userId', this.userId).where('created_at', '>=', startDate).where('created_at', '<=', endDate).fetch()
 
-      let months = [];
+      let months = []
       for (let i = 0; i < monthsCount; i++) {
         months.push({
           start: moment(startDate).add(i, 'months').startOf('month').format(dateFormat),
           end: moment(startDate).add(i, 'months').endOf('month').format(dateFormat),
           month: moment(startDate).add(i, 'months').startOf('month').format("MMM 'YY"),
           amount: 0,
-        });
+        })
       }
 
       let lastMonth = null
@@ -199,7 +219,7 @@ class UserOperation extends Operation {
         let end = moment(month.end)
         let latestLog = null
         logs.forEach(log => {
-          let createdAt = moment(log.created_at);
+          let createdAt = moment(log.created_at)
           if ((createdAt.isAfter(start) && createdAt.isBefore(end)) || createdAt.isSame(start) || createdAt.isSame(end)) {
             if(!latestLog) {
               latestLog = log
@@ -224,7 +244,7 @@ class UserOperation extends Operation {
         }
 
         lastMonth = month
-      });
+      })
 
       return months
     } catch(e) {
