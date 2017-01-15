@@ -1,5 +1,7 @@
 'use strict'
 
+const moment = require('moment')
+
 const HTTPResponse = use('App/HTTPResponse')
 const Operation = use('App/Operations/Operation')
 const User = use('App/Model/User')
@@ -28,6 +30,8 @@ class TransactionOperation extends Operation {
     this.amount = null
     this.page = 1
     this.pageSize = 10
+    this.startDate = null
+    this.endDate = null
   }
 
   get rules() {
@@ -50,7 +54,22 @@ class TransactionOperation extends Operation {
     }
 
     try {
-      let transactions = yield Transaction.query().where('userId', this.userId).with('type').orderBy('created_at', 'desc').paginate(this.page, this.pageSize)
+      let query = Transaction.query().where('userId', this.userId).with('type')
+      console.log('get list')
+
+      if (this.startDate && this.endDate) {
+        console.log('entra', this.startDate, this.endDate)
+        let dateFormat = 'YYYY-MM-DD HH:mm:ss'
+
+        const start = moment(this.startDate).startOf('day').format(dateFormat)
+        const end = moment(this.endDate).endOf('day').format(dateFormat)
+
+        console.log(start, end)
+
+        query = query.where('created_at', '>=', start).where('created_at', '<=', end)
+      }
+
+      let transactions = yield query.orderBy('created_at', 'desc').paginate(this.page, this.pageSize)
 
       return transactions
     } catch(e) {
