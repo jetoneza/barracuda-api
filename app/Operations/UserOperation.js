@@ -202,6 +202,7 @@ class UserOperation extends Operation {
       endDate = endDate.format(dateFormat)
 
       let logs = yield KahaLog.query().where('userId', this.userId).where('created_at', '>=', startDate).where('created_at', '<=', endDate).fetch()
+      let transactions = yield Transaction.query().where('userId', this.userId).with('type').where('created_at', '>=', startDate).where('created_at', '<=', endDate).fetch()
 
       let months = []
       for (let i = 0; i < monthsCount; i++) {
@@ -217,6 +218,28 @@ class UserOperation extends Operation {
       months.forEach(month => {
         let start = moment(month.start)
         let end = moment(month.end)
+
+        // Calculate monthly total spending and earnings
+        let totalSpending = 0
+        let totalEarnings = 0
+        transactions.forEach(transaction => {
+          let createdAt = moment(transaction.created_at)
+          if ((createdAt.isAfter(start) && createdAt.isBefore(end)) || createdAt.isSame(start) || createdAt.isSame(end)) {
+            const { amount, type } = transaction.toJSON()
+
+            if(type.type == TransactionType.TYPE_OUTFLOW) {
+              totalSpending += amount
+            }
+
+            if(type.type == TransactionType.TYPE_INFLOW) {
+              totalEarnings += amount
+            }
+          }
+        })
+
+        month.totalSpending = totalSpending
+        month.totalEarnings = totalEarnings
+
         let latestLog = null
         logs.forEach(log => {
           let createdAt = moment(log.created_at)
